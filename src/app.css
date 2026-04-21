@@ -1,0 +1,50 @@
+@import './lib/styles/design-tokens.css';
+@import './lib/styles/typography.css';
+@import './lib/styles/transitions.css';
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+	background: var(--color-bg);
+	color: var(--color-text);
+}
+
+body {
+	font-family: var(--font-sans);
+	font-size: var(--text-base);
+	line-height: var(--leading-normal);
+	overflow: hidden;
+}
+
+::-webkit-scrollbar {
+	display: none;
+}
+
+html {
+	scrollbar-width: none;
+}
+
+img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+button {
+	font-family: inherit;
+	cursor: pointer;
+}
