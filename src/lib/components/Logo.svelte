@@ -27,6 +27,17 @@
 		align-items: center;
 		gap: 0;
 		user-select: none;
+		max-width: 100%;
+		text-align: center;
+	}
+
+	.logo > * {
+		max-width: 100%;
+	}
+
+	.logo__tagline {
+		overflow-wrap: break-word;
+		word-break: keep-all;
 	}
 
 	.logo__primary {

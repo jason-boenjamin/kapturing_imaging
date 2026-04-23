@@ -24,7 +24,7 @@
 		overflow: hidden;
 	}
 
-	@media (max-width: 1023px) {
+	@media (max-width: 767px) {
 		.section {
 			width: 100vw !important;
 			height: auto;

@@ -94,6 +94,8 @@
 		display: grid;
 		place-items: center;
 		position: relative;
+		overflow: hidden;
+		padding: var(--space-8) var(--space-6);
 	}
 
 	.scroll-indicator {
@@ -259,7 +261,7 @@
 	}
 
 	/* ── Mobile ── */
-	@media (max-width: 1023px) {
+	@media (max-width: 767px) {
 		.hero {
 			display: flex;
 			flex-direction: column;
