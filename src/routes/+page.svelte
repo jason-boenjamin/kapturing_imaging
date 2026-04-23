@@ -272,15 +272,15 @@
 	}
 
 	.contact .section-label {
-		margin-bottom: var(--space-12);
+		padding-top: 0;
+		margin-bottom: var(--space-8);
 	}
 
 	.contact-content {
-		flex: 1;
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
-		gap: var(--space-16);
+		justify-content: flex-start;
+		gap: var(--space-10);
 		max-width: 500px;
 		margin-left: 15%;
 	}

@@ -36,15 +36,35 @@
 			return () => io.disconnect();
 		}
 
-		// Desktop: listen for wheel-down once we're visible (horizontal scroll near end).
+		// Desktop: require an aggressive, sustained wheel-down while the button
+		// is visible — accumulate deltaY over a sliding window so a single flick
+		// or stray scroll tick never triggers. Clicking is always allowed.
 		let cooling = false;
+		let accumulated = 0;
+		let lastEvent = 0;
+		const THRESHOLD = 900; // total pixels of scroll in the window
+		const RESET_MS = 350; // accumulated delta resets after this gap
+
 		function onWheel(e: WheelEvent) {
-			if (!visible) return;
+			if (!visible) {
+				accumulated = 0;
+				return;
+			}
 			if (cooling) return;
-			if (e.deltaY <= 0) return;
-			cooling = true;
-			onactivate();
-			setTimeout(() => (cooling = false), 1200);
+			if (e.deltaY <= 0) {
+				accumulated = 0;
+				return;
+			}
+			const now = performance.now();
+			if (now - lastEvent > RESET_MS) accumulated = 0;
+			lastEvent = now;
+			accumulated += e.deltaY;
+			if (accumulated >= THRESHOLD) {
+				cooling = true;
+				accumulated = 0;
+				onactivate();
+				setTimeout(() => (cooling = false), 1500);
+			}
 		}
 		window.addEventListener('wheel', onWheel, { passive: true });
 		return () => window.removeEventListener('wheel', onWheel);
