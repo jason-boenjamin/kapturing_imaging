@@ -261,9 +261,21 @@
 	/* ── Mobile ── */
 	@media (max-width: 1023px) {
 		.hero {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
 			min-height: 100svh;
 			height: 100svh;
-			padding: var(--space-6);
+			padding: var(--space-8) var(--space-6);
+		}
+
+		/* Landscape / short mobile viewports */
+		@media (orientation: landscape) and (max-height: 520px) {
+			.hero {
+				padding: var(--space-4) var(--space-6);
+			}
 		}
 
 		.portfolio-section {

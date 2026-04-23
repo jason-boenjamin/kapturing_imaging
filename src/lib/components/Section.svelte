@@ -29,6 +29,8 @@
 			width: 100vw !important;
 			height: auto;
 			min-height: 100svh;
+			display: flex;
+			flex-direction: column;
 		}
 	}
 </style>
