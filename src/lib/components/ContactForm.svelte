@@ -167,6 +167,18 @@
 		border-color: var(--color-white);
 	}
 
+	/* Defeat browser autofill's forced light-blue background + black text. */
+	.form-input:-webkit-autofill,
+	.form-input:-webkit-autofill:hover,
+	.form-input:-webkit-autofill:focus,
+	.form-input:-webkit-autofill:active {
+		-webkit-text-fill-color: var(--color-text);
+		caret-color: var(--color-text);
+		-webkit-box-shadow: 0 0 0 1000px var(--color-bg) inset;
+		box-shadow: 0 0 0 1000px var(--color-bg) inset;
+		transition: background-color 9999s ease-out, color 9999s ease-out;
+	}
+
 	.form-input:disabled {
 		opacity: 0.5;
 		cursor: not-allowed;
