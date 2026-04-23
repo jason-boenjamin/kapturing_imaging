@@ -8,6 +8,7 @@
 	import { inview } from '$lib/actions/inview';
 	import { getPortfolioImages } from '$lib/data/portfolio';
 	import { scrollState } from '$lib/stores/scroll.svelte';
+	import signatureSvg from '$lib/assets/kevin-signature.svg?raw';
 
 	const portfolioImages = getPortfolioImages();
 	let showScrollIndicator = $state(false);
@@ -64,10 +65,12 @@
 <!-- ABOUT -->
 <Section id="about">
 	<div class="about">
-		<span class="section-label" use:inview>ABOUT</span>
 		<div class="about-text" use:inview={{ threshold: 0.2 }}>
 			<p class="reveal" style="transition-delay: 0.1s">The art of noticing what won&rsquo;t last.</p>
 			<p class="reveal" style="transition-delay: 0.3s">An eye for what time cannot repeat.</p>
+			<figure class="signature" aria-label="Kevin Sugiyama signature">
+				{@html signatureSvg}
+			</figure>
 		</div>
 	</div>
 </Section>
@@ -163,9 +166,9 @@
 	.about {
 		width: 100%;
 		height: 100%;
-		display: grid;
-		grid-template-columns: 1fr 1.5fr;
+		display: flex;
 		align-items: center;
+		justify-content: center;
 		padding: var(--section-padding-y) var(--section-padding-x);
 	}
 
@@ -188,6 +191,8 @@
 	.about-text {
 		display: flex;
 		flex-direction: column;
+		align-items: center;
+		text-align: center;
 		gap: var(--space-4);
 		max-width: 35ch;
 	}
@@ -210,6 +215,51 @@
 	.about-text:global(.in-view) .reveal {
 		opacity: 1;
 		transform: translateY(0);
+	}
+
+	.signature {
+		align-self: center;
+		width: clamp(120px, 18vw, 220px);
+		margin-top: var(--space-8);
+		color: var(--color-white);
+		opacity: 0.95;
+		user-select: none;
+		pointer-events: none;
+	}
+
+	.signature :global(svg) {
+		display: block;
+		width: 100%;
+		height: auto;
+		overflow: visible;
+	}
+
+	.signature :global(svg path) {
+		stroke-width: 2.5;
+		stroke-dasharray: 1;
+		stroke-dashoffset: 1;
+		transition: stroke-dashoffset 260ms var(--ease-in-out-smooth);
+		transition-delay: calc(var(--i) * 55ms + 900ms);
+	}
+
+	.about-text:global(.in-view) .signature :global(svg path) {
+		stroke-dashoffset: 0;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.signature :global(svg path) {
+			stroke-dashoffset: 0;
+			transition: none;
+		}
+
+		.signature {
+			opacity: 0;
+			transition: opacity var(--duration-normal) var(--ease-out-expo) 0.6s;
+		}
+
+		.about-text:global(.in-view) .signature {
+			opacity: 0.95;
+		}
 	}
 
 	/* ── Contact ── */
@@ -294,13 +344,13 @@
 			height: var(--space-8);
 		}
 
-		.about {
-			grid-template-columns: 1fr;
-			gap: var(--space-8);
-		}
-
 		.about-text {
 			max-width: 90vw;
+		}
+
+		.signature {
+			width: clamp(100px, 32vw, 160px);
+			margin-top: var(--space-6);
 		}
 
 		.contact-content {

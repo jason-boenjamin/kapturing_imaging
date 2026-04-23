@@ -1,0 +1,32 @@
+name = "kapture-contact"
+main = "src/index.ts"
+compatibility_date = "2025-04-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Non-secret configuration. Change TO_EMAIL if the recipient changes.
+# ALLOWED_ORIGIN should be the exact origin of the deployed site
+# (e.g. "https://jason-boenjamin.github.io"). Use "*" temporarily if
+# you need to test from localhost during wrangler dev.
+[vars]
+TO_EMAIL = "kevin.sugiyama001@gmail.com"
+ALLOWED_ORIGIN = "https://jason-boenjamin.github.io"
+FROM_ADDRESS = "Kapture Imaging <onboarding@resend.dev>"
+
+# Secret: set via `wrangler secret put RESEND_API_KEY`
+# (do NOT commit the key here)
+
+# Rate limiters — Cloudflare Workers Rate Limiting (GA 2025).
+# Keyed by cf-connecting-ip in the handler.
+[[unsafe.bindings]]
+name = "RL_BURST"
+type = "ratelimit"
+# 3 submissions per 10 minutes per IP
+namespace_id = "1001"
+simple = { limit = 3, period = 600 }
+
+[[unsafe.bindings]]
+name = "RL_DAILY"
+type = "ratelimit"
+# 10 submissions per 24 hours per IP
+namespace_id = "1002"
+simple = { limit = 10, period = 86400 }
