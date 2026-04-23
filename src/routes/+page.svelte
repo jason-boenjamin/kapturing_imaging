@@ -5,10 +5,13 @@
 	import PortfolioImage from '$lib/components/PortfolioImage.svelte';
 	import ContactForm from '$lib/components/ContactForm.svelte';
 	import SocialLinks from '$lib/components/SocialLinks.svelte';
+	import ScrollContainer from '$lib/components/ScrollContainer.svelte';
+	import Gallery from '$lib/components/Gallery.svelte';
+	import ViewMoreButton from '$lib/components/ViewMoreButton.svelte';
 	import { inview } from '$lib/actions/inview';
 	import { getPortfolioImages } from '$lib/data/portfolio';
 	import { scrollState } from '$lib/stores/scroll.svelte';
-	import signatureSvg from '$lib/assets/kevin-signature.svg?raw';
+	import { base } from '$app/paths';
 
 	const portfolioImages = getPortfolioImages();
 	let showScrollIndicator = $state(false);
@@ -32,6 +35,8 @@
 		}
 	});
 </script>
+
+<ScrollContainer>
 
 <!-- HERO -->
 <Section id="hero">
@@ -66,10 +71,17 @@
 <Section id="about">
 	<div class="about">
 		<div class="about-text" use:inview={{ threshold: 0.2 }}>
-			<p class="reveal" style="transition-delay: 0.1s">The art of noticing what won&rsquo;t last.</p>
+			<p class="reveal" style="transition-delay: 0.1s">The art of noticing what will not last.</p>
 			<p class="reveal" style="transition-delay: 0.3s">An eye for what time cannot repeat.</p>
-			<figure class="signature" aria-label="Kevin Sugiyama signature">
-				{@html signatureSvg}
+			<figure class="signature reveal" style="transition-delay: 0.9s">
+				<img
+					src="{base}/images/signature/kevin-signature-clean.png"
+					alt="Kevin Sugiyama signature"
+					width="556"
+					height="318"
+					loading="lazy"
+					decoding="async"
+				/>
 			</figure>
 		</div>
 	</div>
@@ -88,6 +100,12 @@
 		<span class="copyright">&copy; {new Date().getFullYear()} Kapture Imaging</span>
 	</div>
 </Section>
+
+</ScrollContainer>
+
+<Gallery />
+
+<ViewMoreButton />
 
 <style>
 	/* ── Hero ── */
@@ -219,47 +237,17 @@
 
 	.signature {
 		align-self: center;
-		width: clamp(120px, 18vw, 220px);
+		width: clamp(120px, 18vw, 200px);
 		margin-top: var(--space-8);
-		color: var(--color-white);
-		opacity: 0.95;
 		user-select: none;
 		pointer-events: none;
 	}
 
-	.signature :global(svg) {
+	.signature img {
 		display: block;
 		width: 100%;
 		height: auto;
-		overflow: visible;
-	}
-
-	.signature :global(svg path) {
-		stroke-width: 2.5;
-		stroke-dasharray: 1;
-		stroke-dashoffset: 1;
-		transition: stroke-dashoffset 260ms var(--ease-in-out-smooth);
-		transition-delay: calc(var(--i) * 55ms + 900ms);
-	}
-
-	.about-text:global(.in-view) .signature :global(svg path) {
-		stroke-dashoffset: 0;
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.signature :global(svg path) {
-			stroke-dashoffset: 0;
-			transition: none;
-		}
-
-		.signature {
-			opacity: 0;
-			transition: opacity var(--duration-normal) var(--ease-out-expo) 0.6s;
-		}
-
-		.about-text:global(.in-view) .signature {
-			opacity: 0.95;
-		}
+		opacity: 0.92;
 	}
 
 	/* ── Contact ── */

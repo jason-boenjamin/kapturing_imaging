@@ -1,0 +1,4 @@
+# Gallery images go here.
+# Drop .jpg / .png / .webp files in this folder. The gallery component
+# reads the manifest in src/lib/data/gallery.ts — add new filenames there
+# to make them appear in the Gallery section.

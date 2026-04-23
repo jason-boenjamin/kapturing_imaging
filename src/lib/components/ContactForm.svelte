@@ -10,7 +10,8 @@
 	let status = $state<'idle' | 'sending' | 'sent' | 'error'>('idle');
 	let errorMsg = $state('');
 
-	const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	const EMAIL_RE =
+		/^[A-Za-z0-9._%+-]+@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)*\.[A-Za-z]{2,}$/;
 
 	async function submit(event: SubmitEvent) {
 		event.preventDefault();
@@ -46,8 +47,10 @@
 				return fail('Too many submissions — please try again later.');
 			}
 
-			const data: { error?: string } = await res.json().catch(() => ({}));
-			return fail(data.error ?? 'Something went wrong. Please try again.');
+			const data: { error?: unknown } = await res.json().catch(() => ({}));
+			const safeError =
+				typeof data.error === 'string' && data.error.length <= 200 ? data.error : null;
+			return fail(safeError ?? 'Something went wrong. Please try again.');
 		} catch {
 			return fail('Network error — check your connection and try again.');
 		}

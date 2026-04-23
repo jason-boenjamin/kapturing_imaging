@@ -22,14 +22,8 @@ body {
 	font-family: var(--font-sans);
 	font-size: var(--text-base);
 	line-height: var(--leading-normal);
-	overflow: hidden;
-}
-
-@media (max-width: 767px) {
-	body {
-		overflow: visible;
-		overflow-x: hidden;
-	}
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 
 ::-webkit-scrollbar {

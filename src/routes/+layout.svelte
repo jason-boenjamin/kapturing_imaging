@@ -1,6 +1,5 @@
 <script lang="ts">
 	import '../app.css';
-	import ScrollContainer from '$lib/components/ScrollContainer.svelte';
 	import type { Snippet } from 'svelte';
 
 	let { children }: { children: Snippet } = $props();
@@ -10,6 +9,4 @@
 	<title>Kapture Imaging</title>
 </svelte:head>
 
-<ScrollContainer>
-	{@render children()}
-</ScrollContainer>
+{@render children()}

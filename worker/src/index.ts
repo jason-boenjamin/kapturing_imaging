@@ -15,7 +15,9 @@ interface Env {
 	RL_DAILY: RateLimiter;
 }
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Pragmatic email regex — covers common cases without trying to implement RFC 5322.
+// Disallows leading/trailing dots in local part, requires a valid-looking TLD.
+const EMAIL_RE = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)*\.[A-Za-z]{2,}$/;
 
 function corsHeaders(origin: string): HeadersInit {
 	return {
