@@ -66,9 +66,8 @@
 	<div class="about">
 		<span class="section-label" use:inview>ABOUT</span>
 		<div class="about-text" use:inview={{ threshold: 0.2 }}>
-			<p class="reveal" style="transition-delay: 0.1s">We capture what others overlook.</p>
-			<p class="reveal" style="transition-delay: 0.25s">Every frame is deliberate.</p>
-			<p class="reveal" style="transition-delay: 0.4s">Every detail, considered.</p>
+			<p class="reveal" style="transition-delay: 0.1s">The art of noticing what won&rsquo;t last.</p>
+			<p class="reveal" style="transition-delay: 0.3s">An eye for what time cannot repeat.</p>
 		</div>
 	</div>
 </Section>
@@ -262,7 +261,9 @@
 	/* ── Mobile ── */
 	@media (max-width: 1023px) {
 		.hero {
-			padding: var(--space-16) var(--space-6);
+			min-height: 100svh;
+			height: 100svh;
+			padding: var(--space-6);
 		}
 
 		.portfolio-section {
