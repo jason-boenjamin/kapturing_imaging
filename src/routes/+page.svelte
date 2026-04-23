@@ -7,6 +7,9 @@
 	import SocialLinks from '$lib/components/SocialLinks.svelte';
 	import ScrollContainer from '$lib/components/ScrollContainer.svelte';
 	import Gallery from '$lib/components/Gallery.svelte';
+	import Shutter from '$lib/components/Shutter.svelte';
+
+	type ShutterPhase = 'idle' | 'closing' | 'closed' | 'opening';
 	import ViewMoreButton from '$lib/components/ViewMoreButton.svelte';
 	import { inview } from '$lib/actions/inview';
 	import { getPortfolioImages } from '$lib/data/portfolio';
@@ -16,8 +19,13 @@
 	const portfolioImages = getPortfolioImages();
 	let showScrollIndicator = $state(false);
 	let scrollIndicatorFaded = $state(false);
-	let galleryOpen = $state(false);
 	let isMobile = $state(false);
+
+	type View = 'home' | 'gallery';
+	let currentView = $state<View>('home');
+	let shutterPhase = $state<ShutterPhase>('idle');
+	let pendingView: View | null = null;
+	let pendingScrollTarget: 'start' | 'end' | null = null;
 
 	const socialLinks = [
 		{ platform: 'Instagram', url: 'https://www.instagram.com/kapture._.imaging/' },
@@ -31,12 +39,34 @@
 		setTimeout(() => (scrollIndicatorFaded = true), 5000);
 	});
 
-	function openGallery() {
-		galleryOpen = true;
+	function transitionTo(next: View, scrollTargetOnHome?: 'start' | 'end') {
+		if (shutterPhase !== 'idle') return;
+		if (next === currentView && !scrollTargetOnHome) return;
+		pendingView = next;
+		pendingScrollTarget = scrollTargetOnHome ?? null;
+		shutterPhase = 'closing';
 	}
 
-	function closeGallery() {
-		galleryOpen = false;
+	function onShutterPhase(p: 'closed' | 'open') {
+		if (p === 'closed') {
+			// Content swap happens while the shutter is sealed.
+			if (pendingView) currentView = pendingView;
+			if (pendingScrollTarget && scrollState.lenis) {
+				const max =
+					(scrollState.lenis as unknown as { limit: number }).limit ?? 0;
+				scrollState.lenis.scrollTo(pendingScrollTarget === 'start' ? 0 : max, {
+					immediate: true,
+					force: true
+				});
+			}
+			pendingView = null;
+			pendingScrollTarget = null;
+			// Kick the opening phase in the next frame so the transform has a
+			// chance to start from the sealed position.
+			requestAnimationFrame(() => (shutterPhase = 'opening'));
+		} else {
+			shutterPhase = 'idle';
+		}
 	}
 
 	// Hide scroll indicator on first scroll
@@ -114,9 +144,19 @@
 
 </ScrollContainer>
 
-<Gallery open={galleryOpen} {isMobile} onclose={closeGallery} />
+{#if currentView === 'gallery'}
+	<Gallery
+		onhome={() => transitionTo('home', 'start')}
+		oncontact={() => transitionTo('home', 'end')}
+	/>
+{/if}
 
-<ViewMoreButton visible={galleryOpen ? false : undefined} onactivate={openGallery} />
+<ViewMoreButton
+	visible={currentView === 'gallery' ? false : undefined}
+	onactivate={() => transitionTo('gallery')}
+/>
+
+<Shutter phase={shutterPhase} onphasechange={onShutterPhase} />
 
 <style>
 	/* ── Hero ── */
@@ -280,12 +320,13 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: flex-start;
-		gap: var(--space-10);
+		gap: var(--space-16);
 		max-width: 500px;
 		margin-left: 15%;
 	}
 
 	.contact-info {
+		padding-top: var(--space-4);
 		opacity: 0;
 		transform: translateY(15px);
 		transition:

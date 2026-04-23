@@ -57,6 +57,8 @@
 			scrollState.direction = e.direction;
 		});
 
+		scrollState.lenis = lenis;
+
 		function raf(time: number) {
 			lenis.raf(time);
 			requestAnimationFrame(raf);
@@ -64,6 +66,7 @@
 		requestAnimationFrame(raf);
 
 		return () => {
+			scrollState.lenis = null;
 			lenis.destroy();
 			window.removeEventListener('resize', onResize);
 		};

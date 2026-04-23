@@ -1,23 +1,24 @@
 import { base } from '$app/paths';
+import { generatedGallery } from './gallery-generated';
 
 export interface GalleryItem {
 	src: string;
 	alt: string;
-	// Optional aspect ratio hint for reserving layout space before the image loads.
-	aspect?: number; // width / height
+	/** ISO date string (from EXIF if available). */
+	date?: string;
+	/** width / height — lets the grid reserve space before load. */
+	aspect?: number;
 }
 
 /**
- * Gallery manifest. To add a new photo:
- *   1. Drop the file into `static/images/gallery/`
- *   2. Add an entry to this array
- *
- * Tip: keep filenames lowercased and hyphenated for consistency.
+ * Gallery manifest. Prefer running `npm run gallery:scan` to regenerate
+ * `gallery-generated.ts` from the EXIF metadata of files in
+ * `static/images/gallery/` — that's the source of truth. Return value below
+ * rewrites the `src` field to include the SvelteKit base path.
  */
 export function getGalleryImages(): GalleryItem[] {
-	return [
-		// Example entries — replace with your own:
-		// { src: `${base}/images/gallery/01-kyoto-dusk.jpg`, alt: 'Kyoto backstreet at dusk', aspect: 3 / 2 },
-		// { src: `${base}/images/gallery/02-aston-detail.jpg`, alt: 'Aston Martin grille detail', aspect: 2 / 3 }
-	];
+	return generatedGallery.map((item) => ({
+		...item,
+		src: `${base}${item.src}`
+	}));
 }
