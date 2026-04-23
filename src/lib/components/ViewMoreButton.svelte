@@ -3,61 +3,59 @@
 	import { scrollState } from '$lib/stores/scroll.svelte';
 
 	let {
-		target = '#gallery',
+		onactivate,
+		visible: visibleProp,
 		contactSelector = '[data-section="contact"]'
 	}: {
-		target?: string;
+		/** Fires on click, or on wheel/touch gesture past the main-scroll endpoint. */
+		onactivate: () => void;
+		/** Force-hide (e.g. when gallery is open). Undefined = auto behavior. */
+		visible?: boolean | undefined;
 		contactSelector?: string;
 	} = $props();
 
-	let visible = $state(false);
+	let autoVisible = $state(false);
 	let mobile = $state(false);
 
-	function smoothScrollTo(el: Element) {
-		el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-	}
-
-	function click() {
-		const el = document.querySelector(target);
-		if (el) smoothScrollTo(el);
-	}
+	const visible = $derived(visibleProp === false ? false : autoVisible);
 
 	onMount(() => {
 		mobile = window.innerWidth < 768;
 
 		if (mobile) {
-			// On mobile, reveal the button once the Contact section is in view.
+			// On mobile, reveal the button only once the Contact section is mostly in view.
 			const contact = document.querySelector(contactSelector);
 			if (!contact) return;
 			const io = new IntersectionObserver(
 				([entry]) => {
-					visible = entry.isIntersecting && entry.intersectionRatio >= 0.45;
+					autoVisible = entry.isIntersecting && entry.intersectionRatio >= 0.55;
 				},
-				{ threshold: [0, 0.45, 1] }
+				{ threshold: [0, 0.55, 1] }
 			);
 			io.observe(contact);
 			return () => io.disconnect();
 		}
 
-		// Desktop: listen for wheel-down-at-end-of-horizontal to trigger the jump.
+		// Desktop: listen for wheel-down once we're visible (horizontal scroll near end).
 		let cooling = false;
 		function onWheel(e: WheelEvent) {
 			if (!visible) return;
 			if (cooling) return;
 			if (e.deltaY <= 0) return;
-			// User wants to go further after horizontal end — magnetically jump.
 			cooling = true;
-			click();
+			onactivate();
 			setTimeout(() => (cooling = false), 1200);
 		}
 		window.addEventListener('wheel', onWheel, { passive: true });
 		return () => window.removeEventListener('wheel', onWheel);
 	});
 
-	// Desktop visibility is driven by Lenis scroll progress (tracked in scrollState).
+	// Desktop visibility: require the user to be ~at the end of the horizontal scroll.
+	// 0.95 leaves room for small natural under-scrolls while still requiring
+	// the visitor to have crossed most of the Contact section.
 	$effect(() => {
 		if (mobile) return;
-		visible = scrollState.progress >= 0.9;
+		autoVisible = scrollState.progress >= 0.95;
 	});
 </script>
 
@@ -67,7 +65,7 @@
 	class:visible
 	class:mobile
 	aria-label="View the Gallery"
-	onclick={click}
+	onclick={onactivate}
 >
 	<span class="label">View More</span>
 	<span class="arrow" aria-hidden="true">
@@ -78,7 +76,7 @@
 <style>
 	.view-more {
 		position: fixed;
-		z-index: 20;
+		z-index: 30;
 		display: inline-flex;
 		align-items: center;
 		gap: var(--space-3);
@@ -155,7 +153,6 @@
 			right: var(--space-4);
 			transform: translateY(-50%) translateX(12px);
 			padding: var(--space-3) var(--space-4);
-			writing-mode: horizontal-tb;
 		}
 
 		.view-more.visible {

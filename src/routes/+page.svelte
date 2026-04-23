@@ -16,6 +16,8 @@
 	const portfolioImages = getPortfolioImages();
 	let showScrollIndicator = $state(false);
 	let scrollIndicatorFaded = $state(false);
+	let galleryOpen = $state(false);
+	let isMobile = $state(false);
 
 	const socialLinks = [
 		{ platform: 'Instagram', url: 'https://www.instagram.com/kapture._.imaging/' },
@@ -23,10 +25,19 @@
 	];
 
 	onMount(async () => {
+		isMobile = window.innerWidth < 768;
 		await document.fonts.ready;
 		setTimeout(() => (showScrollIndicator = true), 1800);
 		setTimeout(() => (scrollIndicatorFaded = true), 5000);
 	});
+
+	function openGallery() {
+		galleryOpen = true;
+	}
+
+	function closeGallery() {
+		galleryOpen = false;
+	}
 
 	// Hide scroll indicator on first scroll
 	$effect(() => {
@@ -103,9 +114,9 @@
 
 </ScrollContainer>
 
-<Gallery />
+<Gallery open={galleryOpen} {isMobile} onclose={closeGallery} />
 
-<ViewMoreButton />
+<ViewMoreButton visible={galleryOpen ? false : undefined} onactivate={openGallery} />
 
 <style>
 	/* ── Hero ── */
