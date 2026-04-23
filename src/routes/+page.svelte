@@ -80,7 +80,7 @@
 		<div class="contact-content">
 			<ContactForm />
 			<div class="contact-info" use:inview={{ threshold: 0.2 }}>
-				<SocialLinks email="hello@kaptureimaging.com" links={socialLinks} />
+				<SocialLinks email="kevin.sugiyama001@gmail.com" links={socialLinks} />
 			</div>
 		</div>
 		<span class="copyright">&copy; {new Date().getFullYear()} Kapture Imaging</span>
@@ -261,6 +261,10 @@
 
 	/* ── Mobile ── */
 	@media (max-width: 1023px) {
+		.hero {
+			padding: var(--space-16) var(--space-6);
+		}
+
 		.portfolio-section {
 			flex-direction: column;
 			height: auto;
@@ -290,21 +294,30 @@
 		}
 
 		.scroll-indicator {
-			bottom: var(--space-6);
-			right: 50%;
-			transform: translateX(50%);
+			bottom: var(--space-10);
+			left: var(--space-4);
+			right: auto;
+			transform: none;
 			flex-direction: column;
+			align-items: flex-start;
+			gap: var(--space-3);
+		}
+
+		.scroll-indicator.visible span,
+		.scroll-indicator.visible .scroll-line {
+			animation: breathe 2.6s var(--ease-in-out-smooth) infinite;
 		}
 
 		.scroll-line {
 			width: 1px;
-			height: 30px;
-			animation: lineExpandV 1.5s var(--ease-in-out-smooth) infinite;
+			height: 32px;
+			transform: none;
+			animation: none;
 		}
 
-		@keyframes lineExpandV {
-			0%, 100% { transform: scaleY(0.5); opacity: 0.3; }
-			50% { transform: scaleY(1); opacity: 1; }
+		@keyframes breathe {
+			0%, 100% { opacity: 0.35; }
+			50% { opacity: 1; }
 		}
 	}
 </style>

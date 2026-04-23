@@ -11,17 +11,40 @@
 	let mobile = $state(false);
 
 	onMount(async () => {
-		const Lenis = (await import('lenis')).default;
-
 		mobile = isMobile();
 		const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+		const onResize = () => {
+			const nowMobile = isMobile();
+			if (nowMobile !== mobile) {
+				location.reload();
+			}
+		};
+		window.addEventListener('resize', onResize);
+
+		if (mobile) {
+			const onScroll = () => {
+				const max = document.documentElement.scrollHeight - window.innerHeight;
+				scrollState.scroll = window.scrollY;
+				scrollState.progress = max > 0 ? window.scrollY / max : 0;
+			};
+			window.addEventListener('scroll', onScroll, { passive: true });
+			onScroll();
+
+			return () => {
+				window.removeEventListener('scroll', onScroll);
+				window.removeEventListener('resize', onResize);
+			};
+		}
+
+		const Lenis = (await import('lenis')).default;
 		const lenis = new Lenis({
-			wrapper: mobile ? undefined : wrapper,
-			content: mobile ? undefined : content,
-			orientation: mobile ? 'vertical' : 'horizontal',
-			gestureOrientation: mobile ? 'vertical' : 'both',
+			wrapper,
+			content,
+			orientation: 'horizontal',
+			gestureOrientation: 'both',
 			smoothWheel: !prefersReduced,
+			syncTouch: false,
 			lerp: 0.08,
 			wheelMultiplier: 0.8,
 			touchMultiplier: 1.2
@@ -39,14 +62,6 @@
 			requestAnimationFrame(raf);
 		}
 		requestAnimationFrame(raf);
-
-		const onResize = () => {
-			const nowMobile = isMobile();
-			if (nowMobile !== mobile) {
-				location.reload();
-			}
-		};
-		window.addEventListener('resize', onResize);
 
 		return () => {
 			lenis.destroy();
@@ -70,9 +85,10 @@
 	}
 
 	.scroll-wrapper.mobile {
+		width: 100%;
 		height: auto;
-		overflow-x: hidden;
-		overflow-y: auto;
+		overflow: visible;
+		touch-action: pan-y;
 	}
 
 	.scroll-content {

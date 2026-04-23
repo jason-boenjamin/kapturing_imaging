@@ -25,6 +25,13 @@ body {
 	overflow: hidden;
 }
 
+@media (max-width: 1023px) {
+	body {
+		overflow: visible;
+		overflow-x: hidden;
+	}
+}
+
 ::-webkit-scrollbar {
 	display: none;
 }
